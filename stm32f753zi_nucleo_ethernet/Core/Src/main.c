@@ -23,8 +23,18 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "lwip/udp.h"
-#include <string.h>
+#define TCP_SERVER_EXAMPLE 0
+#define TCP_CLIENT_EXAMPLE 1
+#define UDP_EXAMPLE        0
+
+#if TCP_SERVER_EXAMPLE == 1 && TCP_CLIENT_EXAMPLE != 1 && UDP_EXAMPLE !=1
+	#include "tcp_server_demo.h"
+#endif
+
+#if TCP_SERVER_EXAMPLE != 1 && TCP_CLIENT_EXAMPLE == 1 && UDP_EXAMPLE !=1
+	#include "tcp_client_demo.h"
+#endif
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -289,6 +299,7 @@ static void MX_GPIO_Init(void)
 
 /* USER CODE BEGIN 4 */
 
+
 /* USER CODE END 4 */
 
 /* USER CODE BEGIN Header_StartDefaultTask */
@@ -303,6 +314,8 @@ void StartDefaultTask(void const * argument)
   /* init code for LWIP */
   MX_LWIP_Init();
   /* USER CODE BEGIN 5 */
+#if TCP_SERVER_EXAMPLE != 1 && TCP_CLIENT_EXAMPLE != 1 && UDP_EXAMPLE ==1
+  // UDP server basic example
   const char* message = "Hello UDP message!\n\r";
 
   osDelay(1000);
@@ -317,7 +330,6 @@ void StartDefaultTask(void const * argument)
   /* Infinite loop */
   for (;;) {
     osDelay(1000);
-    /* !! PBUF_RAM is critical for correct operation !! */
     udp_buffer = pbuf_alloc(PBUF_TRANSPORT, strlen(message), PBUF_RAM);
 
     if (udp_buffer != NULL) {
@@ -326,6 +338,22 @@ void StartDefaultTask(void const * argument)
       pbuf_free(udp_buffer);
     }
   }
+#endif
+
+#if TCP_SERVER_EXAMPLE == 1 && TCP_CLIENT_EXAMPLE != 1 && UDP_EXAMPLE !=1
+  tcpserver_init();
+#endif
+
+#if TCP_SERVER_EXAMPLE != 1 && TCP_CLIENT_EXAMPLE == 1 && UDP_EXAMPLE !=1
+  tcpclient_init();
+#endif
+
+#if (TCP_SERVER_EXAMPLE == 1 || TCP_CLIENT_EXAMPLE == 1) && UDP_EXAMPLE !=1
+  for(;;)
+  {
+	  osDelay(1);
+  }
+#endif
   /* USER CODE END 5 */
 }
 

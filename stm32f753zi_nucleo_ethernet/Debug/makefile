@@ -26,6 +26,7 @@ RM := rm -rf
 -include Drivers/STM32H7xx_HAL_Driver/Src/subdir.mk
 -include Drivers/BSP/Components/lan8742/subdir.mk
 -include Core/Startup/subdir.mk
+-include Core/Src/tcp_client_server_demo/subdir.mk
 -include Core/Src/subdir.mk
 -include objects.mk
 
